@@ -150,11 +150,11 @@ class DrawPostHelper: AppCompatActivity() {
         params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
         imageView.layoutParams = params
 
-         val dxMovment=post.textLocation[4]
+      /*   val dxMovment=post.textLocation[4]
         val dyMovment=post.textLocation[5]
-        if (dxMovment==0 && dyMovment==0){
+        if (dxMovment==0 && dyMovment==0){*/
             imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-        }else {
+      /*  }else {
             imageView.scaleType = ImageView.ScaleType.MATRIX
             val matrix = Matrix()
             post.textLocation[4]=dxMovment
@@ -162,7 +162,7 @@ class DrawPostHelper: AppCompatActivity() {
             matrix.postTranslate(dxMovment.toPxf(),dyMovment.toPxf(),)
 //            logi( "DrawPostHelper 160  dxMovment=$dxMovment  post.textLocation=${post.textLocation}")
             imageView.imageMatrix = matrix
-        }
+        }*/
 
         layout.addView(imageView)
         Glide.with(layout.context)

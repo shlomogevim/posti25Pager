@@ -33,11 +33,15 @@ class SplashActivity : AppCompatActivity() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        initData()
+     //  addGradeToPosts()
+        changePostId()
+
+
+  initData()
         helpBtnOperate()
         getHeadLines()
-        downloadAllPost()
-        downloadAllArticles()
+        /*        downloadAllPost()
+          downloadAllArticles()*/
 //          pauseIt()
     }
 
@@ -46,7 +50,8 @@ class SplashActivity : AppCompatActivity() {
         pref = getSharedPreferences(SHARPREF_ALMA, Context.MODE_PRIVATE)
         pref.edit().remove(SHARPREF_ALMA).apply()
         pref.edit().putInt(SHARPREF_CURRENT_POST_NUM, 0).apply()
-        pref.edit().putString(SHARPREF_SORT_SYSTEM, SHARPREF_SORT_BY_POST_NUMBER).apply()
+//        pref.edit().putString(SHARPREF_SORT_SYSTEM, SHARPREF_SORT_BY_POST_NUMBER).apply()
+        pref.edit().putString(SHARPREF_SORT_SYSTEM, SHARPREF_SORT_BY_TIME_PUBLISH).apply()
         pref.edit().putString(SHARPREF_MOVING_BACKGROUND, FALSE).apply()
 //        delayInMicroSecond = pref.getInt(SHARPREF_SPLASH_SCREEN_DELAY, 10) * 1000
         delayInMicroSecond = pref.getInt(SHARPREF_SPLASH_SCREEN_DELAY, 3) * 1000
@@ -60,7 +65,114 @@ class SplashActivity : AppCompatActivity() {
         return posts
     }
 
-    private fun downloadPostsForRanges(ranges: List<Pair<Int, Int>>): ArrayList<Post> {
+    private fun downloadPosts(): ArrayList<Post> {
+        val posts = ArrayList<Post>()
+        FirebaseFirestore.getInstance().collection(POST_REF)
+            .addSnapshotListener { value, error ->
+                if (value != null) {
+                    for (doc in value.documents) {
+                        val post = Helper().retrivePostFromFirestore(doc)
+                        if (post.postNum>10){
+                            posts.add(post)
+                        }
+                    }
+//                        logi("57  posts.size=${posts.size}")
+                    //    val posts1 = createSuffelPosts(posts)
+                    savePosts(posts)
+                    pref.edit().putInt(SHARPREF_TOTAL_POSTS_SIZE, posts.size).apply()
+                }
+            }
+        return posts
+    }
+
+    private fun addGradeToPosts() {
+        val posts = ArrayList<Post>()
+        FirebaseFirestore.getInstance().collection(POST_REF)
+            .addSnapshotListener { value, error ->
+                if (value != null) {
+                    for (doc in value.documents) {
+                        val post = Helper().retrivePostFromFirestore(doc)
+                        if (post.postNum > 10) {
+                             posts.add(post)
+                         if (post.postNum<=200) {
+                             //   logi(" 100 postNum=${post.postNum}")
+                                FirebaseFirestore.getInstance().collection(POST_REF)
+                                    .document(post.postNum.toString())
+                                    .update(POST_GRADE, post.grade)
+                                    .addOnSuccessListener {
+                                       // logi("98 SplashActivity update  postNum= ${post.postId} with grade")
+                                    }
+                                    .addOnFailureListener {
+                                       logi("101  SplashActivity fail in update postNum= ${post.postId} with grade, $it")
+                                    }
+                              }
+                        }
+                    }
+                }
+            }
+    }
+    private fun changePostId() {
+        val posts = ArrayList<Post>()
+        FirebaseFirestore.getInstance().collection(POST_REF)
+            .addSnapshotListener { value, error ->
+                if (value != null) {
+                    for (doc in value.documents) {
+                        val post = Helper().retrivePostFromFirestore(doc)
+                        if (post.postNum > 10) {
+                        //    post.grade = 50
+                   //         posts.add(post)
+                       //   if (post.postNum<=200) {
+                            //   logi(" 100 postNum=${post.postNum}")
+                            FirebaseFirestore.getInstance().collection(POST_REF)
+                                .document(post.postNum.toString())
+                                .update(POST_ID,0)
+                                .addOnSuccessListener {
+                                    // logi("98 SplashActivity update  postNum= ${post.postId} with grade")
+                                }
+                                .addOnFailureListener {
+                                    logi("101  SplashActivity fail in update postNum= ${post.postId} with grade, $it")
+                                }
+                      //    }
+                        }
+                    }
+                }
+            }
+    }
+
+/*private fun downloadPosts(): ArrayList<Post> {
+    val posts = ArrayList<Post>()
+    FirebaseFirestore.getInstance().collection(POST_REF)
+        .addSnapshotListener { value, error ->
+            if (value != null) {
+                for (doc in value.documents) {
+                    val post = Helper().retrivePostFromFirestore(doc)
+                    if (post.postNum > 10) {
+                        post.grade = 50 // Set the grade field to 50
+                        posts.add(post)
+                        // Update the "grade" field in Firebase
+                        FirebaseFirestore.getInstance().collection(POST_REF).document(post.postId)
+                            .update("grade", post.grade)
+                            .addOnSuccessListener {
+                                Log.d(TAG, "Grade updated for post ${post.postId}")
+                            }
+                            .addOnFailureListener {
+                                Log.e(TAG, "Error updating grade for post ${post.postId}", it)
+                            }
+                    }
+                }
+                savePosts(posts)
+                pref.edit().putInt(SHARPREF_TOTAL_POSTS_SIZE, posts.size).apply()
+            }
+        }
+    return posts
+}
+*/
+
+
+
+
+
+  /*  private fun downloadPostsForRanges(ranges: List<Pair<Int, Int>>): ArrayList<Post> {
         val posts = ArrayList<Post>()
         for (range in ranges) {
             FirebaseFirestore.getInstance().collection(POST_REF)
@@ -80,25 +192,8 @@ class SplashActivity : AppCompatActivity() {
                 }
         }
         return posts
-    }
+    }*/
 
-    private fun downloadPosts(): ArrayList<Post> {
-        val posts = ArrayList<Post>()
-        FirebaseFirestore.getInstance().collection(POST_REF)
-            .addSnapshotListener { value, error ->
-                if (value != null) {
-                    for (doc in value.documents) {
-                        val post = Helper().retrivePostFromFirestore(doc)
-                        posts.add(post)
-                    }
-//                        logi("57  posts.size=${posts.size}")
-                    //    val posts1 = createSuffelPosts(posts)
-                    savePosts(posts)
-                    pref.edit().putInt(SHARPREF_TOTAL_POSTS_SIZE, posts.size).apply()
-                }
-            }
-        return posts
-    }
 
     private fun savePosts(posts1: ArrayList<Post>) {
         pref.edit().remove(SHARPREF_POSTS_ARRAY).apply()

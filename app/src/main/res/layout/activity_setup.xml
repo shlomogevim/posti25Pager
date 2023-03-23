@@ -56,12 +56,19 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/btn_time_order"  />
             <Button
-                android:id="@+id/btn_grade_post"
+                android:id="@+id/btn_post_num_down"
                 style="@style/ButtonFamily10"
-                android:text="סדר את הפוסטים לפי מומלצים "
+                android:text="סדר את הפוסטים לפי ערכים למטה"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btn_time_order"  />
+                app:layout_constraintTop_toBottomOf="@id/btn_recommender_order"  />
+            <Button
+                android:id="@+id/btn_post_num_up"
+                style="@style/ButtonFamily10"
+                android:text="סדר את הפוסטים לפי ערכים למעלה"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_post_num_down"  />
 
             <Button
                 android:id="@+id/btn_change_profile"
@@ -69,7 +76,7 @@
                 android:text="שנה פרופיל"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btn_recommender_order"  />
+                app:layout_constraintTop_toBottomOf="@id/btn_post_num_up"  />
             <Button
                 android:id="@+id/btn_pass_to_new_post"
                 style="@style/ButtonFamily10"

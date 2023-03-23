@@ -73,20 +73,24 @@ class MainActivity : AppCompatActivity() {
         if (sortSystem == SHARPREF_SORT_BY_SUFFEL) {
             posts = createSuffelPosts(posts)
         }
+        if (sortSystem == SHARPREF_SORT_BY_POST_NUMBER_DOWN) {
+            posts.sortWith(compareByDescending({ it.postNum }))
+        }
+        if (sortSystem == SHARPREF_SORT_BY_POST_NUMBER_UP) {
+            posts.sortBy { it.postNum }
+        }
         if (sortSystem == SHARPREF_SORT_BY_TIME_PUBLISH) {
             posts.sortWith(compareByDescending({ it.timestamp }))
-            //  logi("MainActivity in sortPosts  111       sortSystem=$sortSystem       posts.size=${posts.size}")
         }
         if (sortSystem == SHARPREF_SORT_BY_RECOMMENDED) {
             posts.sortWith(compareByDescending({ it.postId }))                 //postId show recommended factor
         }
-//          persons.sortWith(compareBy({ it.name }, { it.age }))♠
         if (sortSystem == SHARPREF_SORT_BY_GRADE) {
             posts.removeAll({ it.grade == 0 })
 //            logi("MainActivity in sortPosts  125       sortSystem=$sortSystem       posts.size=${posts.size}")
             if (posts.size == 0) {
-                sortSystem == SHARPREF_SORT_BY_RECOMMENDED
-                posts.sortWith(compareByDescending({ it.postId }))
+           /*     sortSystem == SHARPREF_SORT_BY_RECOMMENDED
+                posts.sortWith(compareByDescending({ it.postId }))*/
             } else {
                 posts.sortWith(compareByDescending({ it.grade }))
             }
@@ -111,15 +115,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun savePosts() {
-        /* pref.edit().putString(SHARPREF_GRADE_ZERO, "true").apply()
-         for (post in posts) {
-             if (post.grade > 0) {
-                 pref.edit().putString(SHARPREF_GRADE_ZERO, "false").apply()
-                 break
-             }
-         }*/
-        //     logi("SplashActivity 146   posts=${posts.joinToString()}")
-        pref.edit().remove(SHARPREF_POSTS_ARRAY).apply()
+          pref.edit().remove(SHARPREF_POSTS_ARRAY).apply()
         val editor = pref.edit()
         val gson = Gson()
         val json: String = gson.toJson(posts)
@@ -128,56 +124,81 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setSortSystemBackground() {
-        if (sortSystem == SHARPREF_SORT_BY_POST_NUMBER) {
-            binding.mainLayout.setBackgroundColor(
-                ContextCompat.getColor(
-                    this,
-                    R.color.backgroundPostNumber
-                )
-            )
+        val colorId = when (sortSystem) {
+            SHARPREF_SORT_BY_POST_NUMBER_DOWN, SHARPREF_SORT_BY_POST_NUMBER_UP ->
+                R.color.backgroundPostNumber
+            SHARPREF_SORT_BY_TIME_PUBLISH ->
+                R.color.backgroundTimePublish
+            SHARPREF_SORT_BY_SUFFEL ->
+                R.color.backgroundSuffel
+            SHARPREF_SORT_BY_RECOMMENDED ->
+                R.color.backgroundRecommended
+            SHARPREF_SORT_BY_GRADE ->
+                R.color.backgroundGrade
+            else ->
+                return
         }
-        if (sortSystem == SHARPREF_SORT_BY_TIME_PUBLISH) {
-            binding.mainLayout.setBackgroundColor(
-                ContextCompat.getColor(
-                    this,
-                    R.color.backgroundTimePublish
-                )
-            )
-        }
-        if (sortSystem == SHARPREF_SORT_BY_SUFFEL) {
-            binding.mainLayout.setBackgroundColor(
-                ContextCompat.getColor(
-                    this,
-                    R.color.backgroundSuffel
-                )
-            )
-        }
-        if (sortSystem == SHARPREF_SORT_BY_RECOMMENDED) {
-            binding.mainLayout.setBackgroundColor(
-                ContextCompat.getColor(
-                    this,
-                    R.color.backgroundRecommended
-                )
-            )
-        }
-        if (sortSystem == SHARPREF_SORT_BY_GRADE) {
-            binding.mainLayout.setBackgroundColor(
-                ContextCompat.getColor(
-                    this,
-                    R.color.backgroundGrade
-                )
-            )
-        }
+        binding.mainLayout.setBackgroundColor(ContextCompat.getColor(this, colorId))
     }
 
+
+   /*   private fun setSortSystemBackground() {
+          if (sortSystem == SHARPREF_SORT_BY_POST_NUMBER_DOWN) {
+              binding.mainLayout.setBackgroundColor(
+                  ContextCompat.getColor(
+                      this,
+                      R.color.backgroundPostNumber
+                  )
+              )
+          }
+          if (sortSystem == SHARPREF_SORT_BY_POST_NUMBER_UP ) {
+              binding.mainLayout.setBackgroundColor(
+                  ContextCompat.getColor(
+                      this,
+                      R.color.backgroundPostNumber
+                  )
+              )
+          }
+          if (sortSystem == SHARPREF_SORT_BY_TIME_PUBLISH) {
+              binding.mainLayout.setBackgroundColor(
+                  ContextCompat.getColor(
+                      this,
+                      R.color.backgroundTimePublish
+                  )
+              )
+          }
+          if (sortSystem == SHARPREF_SORT_BY_SUFFEL) {
+              binding.mainLayout.setBackgroundColor(
+                  ContextCompat.getColor(
+                      this,
+                      R.color.backgroundSuffel
+                  )
+              )
+          }
+          if (sortSystem == SHARPREF_SORT_BY_RECOMMENDED) {
+              binding.mainLayout.setBackgroundColor(
+                  ContextCompat.getColor(
+                      this,
+                      R.color.backgroundRecommended
+                  )
+              )
+          }
+          if (sortSystem == SHARPREF_SORT_BY_GRADE) {
+              binding.mainLayout.setBackgroundColor(
+                  ContextCompat.getColor(
+                      this,
+                      R.color.backgroundGrade
+                  )
+              )
+          }
+      }
+*/
     private fun createViewPager10() {
 
         val adapter = PostViewPagerAdapter(posts)
         viewPager.adapter = adapter
-
-//        logi("posts1.size=${posts1.size}")
+//      logi("MainActivity 183 posts.size=${posts.size}")
         viewPager.setOffscreenPageLimit(2)
-
         val cardFlipPageTransformer = CardFlipPageTransformer2()
         cardFlipPageTransformer.setScalable(false)
         viewPager.setPageTransformer(cardFlipPageTransformer)
