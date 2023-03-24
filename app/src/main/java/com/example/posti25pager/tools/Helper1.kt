@@ -64,31 +64,9 @@ class Helper1 : AppCompatActivity() {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-    fun createCenteredTextView(message: String, context: Context): TextView {
-        val textView = TextView(context)
-        textView.id= View.generateViewId()
-        textView.textSize=50f
-        textView.text = message
-        textView.layoutParams = ConstraintLayout.LayoutParams(
-            ConstraintLayout.LayoutParams.WRAP_CONTENT,
-            ConstraintLayout.LayoutParams.WRAP_CONTENT
-        )
-        return textView
-    }
-
-    fun createCenteredTextView2(message: String, layout: ConstraintLayout) {
+    fun createCenteredTextView(post:Post, layout: ConstraintLayout) {
         val context = layout.context
+        val message="num=${post.postNum} grade=${post.grade}"
         val textView = createTextView(message, context)
         textView.id= View.generateViewId()
         textView.textSize=20f

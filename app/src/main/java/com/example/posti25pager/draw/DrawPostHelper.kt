@@ -44,7 +44,8 @@ class DrawPostHelper: AppCompatActivity() {
     }
 
     private fun drawHelperPostNum(currentPost: Post, constraintLayout: ConstraintLayout) {
-        Helper1().createCenteredTextView2(currentPost.postNum.toString(),constraintLayout)
+//        Helper1().createCenteredTextView2(currentPost.postNum.toString(),constraintLayout)
+        Helper1().createCenteredTextView(currentPost,constraintLayout)
     }
     private fun setCurrentParameters(post:Post) {
         val dataAr =post.textLocation

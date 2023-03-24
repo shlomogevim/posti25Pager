@@ -83,16 +83,16 @@ class MainActivity : AppCompatActivity() {
             posts.sortWith(compareByDescending({ it.timestamp }))
         }
         if (sortSystem == SHARPREF_SORT_BY_RECOMMENDED) {
-            posts.sortWith(compareByDescending({ it.postId }))                 //postId show recommended factor
+            posts.sortWith(compareByDescending({ it.grade }))                 //postId show recommended factor
         }
         if (sortSystem == SHARPREF_SORT_BY_GRADE) {
-            posts.removeAll({ it.grade == 0 })
+            posts.removeAll({ it.postId == 0 })
 //            logi("MainActivity in sortPosts  125       sortSystem=$sortSystem       posts.size=${posts.size}")
             if (posts.size == 0) {
            /*     sortSystem == SHARPREF_SORT_BY_RECOMMENDED
                 posts.sortWith(compareByDescending({ it.postId }))*/
             } else {
-                posts.sortWith(compareByDescending({ it.grade }))
+                posts.sortWith(compareByDescending({ it.postId }))
             }
             // logi("MainActivity in sortPosts  121    sortSystem=$sortSystem       posts.size=${posts.size}")
         }

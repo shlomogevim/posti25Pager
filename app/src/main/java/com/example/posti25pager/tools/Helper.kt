@@ -1,5 +1,6 @@
 package com.example.posti25pager.tools
 
+import android.util.Log
 import com.example.posti25pager.R
 import com.example.posti25pager.models.Post
 import com.google.firebase.firestore.DocumentSnapshot
@@ -43,14 +44,13 @@ class Helper {
     }
 
     fun retrivePostFromFirestore(snap: DocumentSnapshot?): Post {
-
+      /*  Log.d("retrivePostFromFirestore", "snap: $snap")
+        val postNumValue = snap?.get("post_num")
+        Log.d("retrivePostFromFirestore", "post_num: $postNumValue")*/
         var textLocation1: String? = null
         var postTextSize1: String? = null
         var postPadding1: String? = null
         val postId = snap?.getLong(POST_ID)!!.toInt()
-
-        val grade = snap?.getLong(POST_GRADE)?.toInt() ?: 50
-
         val postNum = snap.getLong(POST_NUM)!!.toInt()
         val lineNum = snap.getLong(POST_LINE_NUM)!!.toInt()
         val imageUri = snap.getString(POST_IMAGE_URI).toString()
@@ -76,6 +76,11 @@ class Helper {
             convertFromStringArrayToIntArrayList1(postMargin1)
 
         val postLineSpacing = snap?.getDouble(POST_LINE_SPACING)
+
+        val grade = snap?.getLong(POST_GRADE)?.toInt() ?: 50
+ //      val grade = snap?.getLong(POST_GRADE)!!.toInt()
+//        val grade =50
+
         val postVideoUrl = snap?.getString(POST_VIDEO_URL).toString()
         val postVideoText = snap?.getString(POST_VIDEO_TEXT).toString()
 

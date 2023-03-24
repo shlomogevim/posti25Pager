@@ -34,14 +34,14 @@ class SplashActivity : AppCompatActivity() {
         setContentView(binding.root)
 
      //  addGradeToPosts()
-        changePostId()
+//        changePostId()
 
 
   initData()
         helpBtnOperate()
         getHeadLines()
-        /*        downloadAllPost()
-          downloadAllArticles()*/
+        downloadAllPost()
+          downloadAllArticles()
 //          pauseIt()
     }
 
