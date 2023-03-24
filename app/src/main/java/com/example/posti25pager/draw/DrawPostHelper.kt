@@ -1,6 +1,7 @@
 package com.example.posti25pager.draw
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.Matrix
@@ -19,18 +20,19 @@ import com.bumptech.glide.Glide
 import com.example.posti25pager.R
 import com.example.posti25pager.models.Post
 import com.example.posti25pager.tools.*
+import com.flaviofaria.kenburnsview.KenBurnsView
 
 
 class DrawPostHelper: AppCompatActivity() {
     val helper= Helper()
     lateinit var layout: ConstraintLayout
-    //    lateinit var currentPost:Post
+    lateinit var pref: SharedPreferences
     var position1=""
     var margin1=0
     var dis1=0
 
-    fun drawPost( constraintLayout: ConstraintLayout, post: Post) {
-        // var post=updateTextLocation(currentPost)
+    fun drawPost(context: Context, constraintLayout: ConstraintLayout, post: Post) {
+        pref = context.getSharedPreferences(SHARPREF_ALMA, Context.MODE_PRIVATE)
 
         layout=constraintLayout
         setCurrentParameters(post)
@@ -138,6 +140,7 @@ class DrawPostHelper: AppCompatActivity() {
     }
 
     private fun loadImage(layout: ConstraintLayout, post: Post) {
+     //   pref = getSharedPreferences(SHARPREF_ALMA, Context.MODE_PRIVATE)
         val imageView = ImageView(layout.context)
         imageView.id = View.generateViewId()
         val params = ConstraintLayout.LayoutParams(
@@ -145,39 +148,49 @@ class DrawPostHelper: AppCompatActivity() {
             ConstraintLayout.LayoutParams.MATCH_PARENT
         )
 //        params.dimensionRatio = "H,1:1"
+        /*   val dxMovment=post.textLocation[4]
+      val dyMovment=post.textLocation[5]
+      if (dxMovment==0 && dyMovment==0){
+       }else {
+          imageView.scaleType = ImageView.ScaleType.MATRIX
+          val matrix = Matrix()
+          post.textLocation[4]=dxMovment
+          post.textLocation[5]=dyMovment
+          matrix.postTranslate(dxMovment.toPxf(),dyMovment.toPxf(),)
+//            logi( "DrawPostHelper 160  dxMovment=$dxMovment  post.textLocation=${post.textLocation}")
+          imageView.imageMatrix = matrix
+      }*/
         params.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
         params.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
         params.startToStart = ConstraintLayout.LayoutParams.PARENT_ID
         params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
         imageView.layoutParams = params
-
-      /*   val dxMovment=post.textLocation[4]
-        val dyMovment=post.textLocation[5]
-        if (dxMovment==0 && dyMovment==0){*/
-            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-      /*  }else {
-            imageView.scaleType = ImageView.ScaleType.MATRIX
-            val matrix = Matrix()
-            post.textLocation[4]=dxMovment
-            post.textLocation[5]=dyMovment
-            matrix.postTranslate(dxMovment.toPxf(),dyMovment.toPxf(),)
-//            logi( "DrawPostHelper 160  dxMovment=$dxMovment  post.textLocation=${post.textLocation}")
-            imageView.imageMatrix = matrix
-        }*/
-
+        imageView.scaleType = ImageView.ScaleType.CENTER_CROP
         layout.addView(imageView)
-        Glide.with(layout.context)
-            .load(post.imageUri)
-            .into(imageView)
+
+
+        var movingBackgroundMode = pref.getString(SHARPREF_MOVING_BACKGROUND, FALSE)
+
+        val ken = layout.findViewById<com.flaviofaria.kenburnsview.KenBurnsView>(R.id.tour_image)
+
+        if (movingBackgroundMode == TRUE) {
+            Glide.with(layout.context)
+                .load(post.imageUri)
+                .into(ken)
+            ken.resume()
+        } else {
+            Glide.with(layout.context)
+                .load(post.imageUri)
+                .into(imageView)
+        }
     }
+
     fun Int.toPxf(): Float = (this * Resources.getSystem().displayMetrics.density)
     fun updateColor(str: String): String {
         return "#" + str.replace("[^A-Za-z0-9]".toRegex(), "")
     }
 
     fun Int.toPx(): Int = (this * Resources.getSystem().displayMetrics.density).toInt()
-
-
 
     fun logi(message: String) {
         Log.i("gg", message)
